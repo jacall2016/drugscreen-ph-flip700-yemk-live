@@ -208,6 +208,10 @@ class Flip700Utilities:
 
     @staticmethod
     def write_analysis_sheet(analysis_df, file_path, new_sheet_name, analysis_indicators):
+
+        print()
+        print(analysis_indicators)
+        print()
        
         # Melt the DataFrame to reshape it
         analysis_indicators = pd.melt(analysis_indicators, var_name='indicators', value_name='value')

@@ -232,8 +232,8 @@ class Generate:
         Flip700Utilities.export_All_hits(analysis_df,'All_hits_' + file_name + '.xlsx','All_hits')
 
         # Write analysis sheet
-        Flip700Utilities.write_analysis_sheet(analysis_df, "uploads/" + file_name + ".xlsx", - new_sheet_name, analysis_indicators)
-
+        YemkUtilities.write_analysis_sheet(analysis_df, "uploads/" + file_name + ".xlsx", new_sheet_name, analysis_indicators)
+        
     @staticmethod
     def generate_files_phl_bl1_yemk_vl1(uploaded_file_path):
         
