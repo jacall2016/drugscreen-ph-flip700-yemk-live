@@ -93,7 +93,5 @@ class AnalysisUtilities:
             pd.to_numeric(analysis_df['well_number'].str.extract('(\d+)').squeeze(), errors='coerce') +
             analysis_df['well_number'].str.extract('([A-P])').replace(mapping_dict).fillna(0).squeeze()
         )
-        
-        print(analysis_df['well_number'], analysis_df['relative_well_number'])
 
         return analysis_df
