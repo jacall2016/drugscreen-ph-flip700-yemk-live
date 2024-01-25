@@ -1,0 +1,18 @@
+Drug Screen Analyzer
+Description:
+
+Drug Screen Analyzer is a Python program designed to analyze sensor data from Drug screen Excel files. 
+The program processes the input data and exports Excel files containing the analyzed results. It provides a convenient tool for extracting valuable insights from Drug screen sensor data.
+
+Instalation
+1. clone the repository
+git clone https://github.com/jacall2016/drugscreen-ph-flip700-yemk-live.git
+
+install Dependancies
+Python 3.11.5
+
+2. Install required Libraries
+pip install -requirements.txt
+
+
+

@@ -85,5 +85,15 @@ class AnalysisUtilities:
         Returns:
         - pd.DataFrame: The analysis DataFrame with the 'relative_well_number' column calculated.
         """
-        analysis_df['relative_well_number'] = range(1, len(analysis_df) + 1)
+        # Assuming 'well_number' column is of type string
+        mapping_dict = {'A': 0, 'B': 24, 'C': 48, 'D': 72, 'E': 96, 'F': 120, 'G': 144, 'H': 168,
+                        'I': 192, 'J': 216, 'K': 240, 'L': 264, 'M': 288, 'N': 312, 'O': 336, 'P': 360}
+
+        analysis_df['relative_well_number'] = (
+            pd.to_numeric(analysis_df['well_number'].str.extract('(\d+)').squeeze(), errors='coerce') +
+            analysis_df['well_number'].str.extract('([A-P])').replace(mapping_dict).fillna(0).squeeze()
+        )
+        
+        print(analysis_df['well_number'], analysis_df['relative_well_number'])
+
         return analysis_df

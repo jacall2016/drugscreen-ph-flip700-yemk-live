@@ -4,7 +4,6 @@ from ph1utilities import PhlUtilities
 from liveutilities import LiveUtilities
 from yemkutilities import YemkUtilities
 import pandas as pd
-import shutil
 
 class Generate:
 
@@ -147,6 +146,8 @@ class Generate:
             'mean_Flip700': [mean_Flip700_vl2_Flip700_bl1],
             'corrected_mean_Flip700': [corrected_mean_Flip700_vl2_Flip700_bl1],
             'sd_Flip700': [sd_Flip700_vl2_Flip700_bl1],
+            'corrected_sd_Flip700': [corrected_sd_Flip700_vl2_Flip700_bl1],
+            'cuttoff_Flip700':[cuttoff_Flip700_vl2_Flip700_bl1]
         })
 
         return analysis_df, flip700_indicators
