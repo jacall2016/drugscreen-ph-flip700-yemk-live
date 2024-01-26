@@ -29,13 +29,25 @@ the purpose of this software is to fasilitate the fast analysis of the drug scre
 
 [Software Demo Video](http://youtube.link.goes.here)
 
+instruuctions
+start command = python main.py
+type either flip700 or yemk only excel file with yemk or flip700 that have a Samples and High Controls sheet will be acceapted
+
+then select the file from the uploads folder files must be in the uploads folder to bbe acceated
+
+then 3 files will be generated analysis, z-score, and hits along with the assosiated images. 
+
+note: existing files in the downloads folder may be replaced if names are the same
+
 # Data Analysis Results
 
-question 1: How do you correct for the sensor drift in values which is caused by the pattern of how the plates sensors are read.
+question 1: what compounds are hits meaning likely active compounds for each sensor in the screen. 
 
 Answear: calculate a z-score which is a statistical measurement that describes how many standard deviations a value is from the mean of a distribution. to calculate this I took used the following formulas.
 
-Question 2: 
+Question 2: what is  the quality of the results so we know if we can trust them or not?
+
+answear: this quality of the work is determined by how many results are outside the cutoff value. if A there is a high variation of results then the data analysis results are less trustworthy than results which consistantly stay within paramaters given.
 
 VL2 = sensor1
 BL1 = sensor2
@@ -91,5 +103,6 @@ import shutil
 * Item 1: adopt more user flexibility in file and graph generation to allow this analysis program to be useful beyond this drug analysis expiriment.
 * Item 2: adopt an inheritance style structure for my utility classes to reduce redundancy 
 * Item 3: adopt an less hard coded approach to the generation methods to reduce redundancy
+* Item 4: update the system for uploading and downloading files to allo users to select files from any location and select the downloads location 
 
 
