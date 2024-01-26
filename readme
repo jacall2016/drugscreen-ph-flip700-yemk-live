@@ -8,11 +8,88 @@ Instalation
 1. clone the repository
 git clone https://github.com/jacall2016/drugscreen-ph-flip700-yemk-live.git
 
-install Dependancies
-Python 3.11.5
+# Overview
 
-2. Install required Libraries
+I am trying to learn better tecneques for writing data analysis programs so that I can brouden my feild of expertiese.
+
+the data I am using comes from the E241 BNSN | Department of Chemistry and Biochemistry
+Brigham Young University | Provo UT 84604
+
+the drug screen data is currently held in excel sheets. the purpose of this project is to analyise the data to provide a comprehensive dataset which will be accessable to the public. because the data has not yet been fully compiled I will provide a set of links to examples data sets that will be analyized to Eventually produce the comprehensive data set. 
+
+https://docs.google.com/spreadsheets/d/1i03uqVWB7Og-scJ1yuto7hX73qsjgfhT/edit#gid=1408405716
+
+https://docs.google.com/spreadsheets/d/1KVFj_Y8gAapEgAjRUJu_viBs9Awek1b8/edit#gid=1783695802
+
+https://docs.google.com/spreadsheets/d/1wkFMj8i8Dfxy6HOQp0g4ibPyV5hwwtKt/edit#gid=999368742
+
+the purpose of this software is to fasilitate the fast analysis of the drug screen data. The purpose of the drug screen is to identify compound of intrest to find areas of future study. Of particular intrest are compounds which have a harmful effect upon the cells which in this analysis are refered to as hits. These compounds may be possible future medications to combate the african sleeping sickness
+
+{Provide a link to your YouTube demonstration.  It should be a 4-5 minute demo of the data set, the questions and answers, the code running and a walkthrough of the code.}
+
+[Software Demo Video](http://youtube.link.goes.here)
+
+# Data Analysis Results
+
+question 1: How do you correct for the sensor drift in values which is caused by the pattern of how the plates sensors are read.
+
+Answear: calculate a z-score which is a statistical measurement that describes how many standard deviations a value is from the mean of a distribution. to calculate this I took used the following formulas.
+
+Question 2: 
+
+VL2 = sensor1
+BL1 = sensor2
+
+A = VL2/BL1
+
+R(relative_Well_number) = well_number extracted digits + extracted well_number Alphebetic Letter mapped value
+
+perform a liner regression to find the slope
+
+S = R + A. In this equation, X is the explanatory variable and S is the dependent variable.
+
+CS(corrected_slope) = A - (R * S)
+
+M(mean) = ∑(CS) / number of CS
+
+SD(standard_deviation) = √[(∑(CS)2 /n) - (∑CS/n)2]
+
+NSD = number of standard deviations (set at 1.5)
+
+CO(cuttoff_value) = M + (NSD * SD)
+
+CM(corrected_mean) = ∑(CO) / number of CO
+
+CSD(corrected_standard_deviation) = √[(∑(CO)2 /n) - (∑CO/n)2]
+
+Z-score = CO - (CM/CSD)
+
+Z-score-hits = CO < -5
+
+# Development Environment
+Python 3.11.5
 pip install -requirements.txt
 
+requirements
+pandas==2.1.4
+scipy==1.7.3
+openpyxl==3.1.2
+
+other libraries
+import os
+from tkinter import Tk, filedialog
+from datetime import datetime
+import shutil
+
+# Useful Websites
+
+{Make a list of websites that you found helpful in this project}
+* [Web Site Name](http://url.link.goes.here)
+* [Web Site Name](http://url.link.goes.here)
+
+# Future Work
+* Item 1: adopt more user flexibility in file and graph generation to allow this analysis program to be useful beyond this drug analysis expiriment.
+* Item 2: adopt an inheritance style structure for my utility classes to reduce redundancy 
+* Item 3: adopt an less hard coded approach to the generation methods to reduce redundancy
 
 

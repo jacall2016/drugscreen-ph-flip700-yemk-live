@@ -1,6 +1,4 @@
 import pandas as pd
-from scipy.stats import linregress
-from datetime import datetime
 import os
 
 class AnalysisUtilities:

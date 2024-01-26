@@ -1,2 +1,4 @@
-/downloads
-/uploads
+downloads/*
+*.txt
+uploads/*
+!*.txt

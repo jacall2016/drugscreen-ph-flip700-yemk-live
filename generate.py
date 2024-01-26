@@ -3,7 +3,9 @@ from Flip700utilities import Flip700Utilities
 from ph1utilities import PhlUtilities
 from liveutilities import LiveUtilities
 from yemkutilities import YemkUtilities
+import os
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class Generate:
 
@@ -174,6 +176,38 @@ class Generate:
         return analysis_df, live_indicators
 
     @staticmethod
+    def generateGraphs(analysis_df, y_axes_list):
+
+        # Create the 'images' directory if it doesn't exist
+        output_folder = os.path.join("downloads", "images")
+        os.makedirs(output_folder, exist_ok=True)
+
+        # Loop through each y-axis and generate/save the corresponding graph
+        for y_axis in y_axes_list:
+            # Create a new figure and axis
+            fig, ax = plt.subplots()
+
+            # Plot the data
+            ax.scatter(analysis_df['relative_well_number'], analysis_df[y_axis])
+
+            # Set labels and title
+            ax.set_xlabel('Relative Well Number')
+            ax.set_ylabel(y_axis.replace('_', ' ').title())  # Replace underscores with spaces for better labels
+            ax.set_title(f'relative_well_number vs {y_axis}')
+
+            # Set y-axis limit to start at 0 and add a buffer to the upper limit
+            max_value = analysis_df[y_axis].max()
+            buffer_factor = 1.1  # Adjust as needed
+            ax.set_ylim(0, max_value * buffer_factor)
+
+            # Save the figure
+            output_path = os.path.join(output_folder, f'{y_axis}_scatterplot.png')
+            plt.savefig(output_path)
+
+            # Close the figure to free up resources
+            plt.close()
+
+    @staticmethod
     def generatefiles_phl_bl1_Flip700(uploaded_file_path):
         
         sheet1 = "Samples"
@@ -234,6 +268,11 @@ class Generate:
 
         # Write analysis sheet
         YemkUtilities.write_analysis_sheet(analysis_df, "uploads/" + file_name + ".xlsx", new_sheet_name, analysis_indicators)
+
+        # Define the y-axes for each graph
+        y_axes_list = ["total_count", "phl_count", "flip700_count", "live_percentage", "pHL_VL2_BL1", "flip700_vl2_bl1"]
+
+        Generate.generateGraphs(analysis_df, y_axes_list)
         
     @staticmethod
     def generate_files_phl_bl1_yemk_vl1(uploaded_file_path):
@@ -285,3 +324,8 @@ class Generate:
  
         # Write analysis sheet
         YemkUtilities.write_analysis_sheet(analysis_df, "uploads/" + file_name + ".xlsx", new_sheet_name, analysis_indicators)
+
+        # Define the y-axes for each graph
+        y_axes_list = ["total_count", "phl_count", "yemk_count", "live_percentage", "pHL_VL2_BL1", "yemk_vl2_bl1"]
+
+        Generate.generateGraphs(analysis_df, y_axes_list)
