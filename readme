@@ -27,7 +27,7 @@ the purpose of this software is to fasilitate the fast analysis of the drug scre
 
 {Provide a link to your YouTube demonstration.  It should be a 4-5 minute demo of the data set, the questions and answers, the code running and a walkthrough of the code.}
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video]https://youtu.be/uuoOk10lipc
 
 instruuctions
 start command = python main.py
@@ -96,8 +96,8 @@ import shutil
 # Useful Websites
 
 {Make a list of websites that you found helpful in this project}
-* [Web Site Name](http://url.link.goes.here)
-* [Web Site Name](http://url.link.goes.here)
+* [pandas]https://pandas.pydata.org/
+* [Data Analysis with Python - Full Course for Beginners]https://www.youtube.com/watch?v=r-uOLxNrNk8
 
 # Future Work
 * Item 1: adopt more user flexibility in file and graph generation to allow this analysis program to be useful beyond this drug analysis expiriment.
