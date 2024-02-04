@@ -1,4 +1,5 @@
 from scipy.stats import linregress
+import pandas as pd
 
 class PhlUtilities:
     
@@ -89,23 +90,16 @@ class PhlUtilities:
     
     @staticmethod
     def populate_cutoff_PHL_VL2_BL1_below_cuttoff(analysis_df, cuttoff_phl_vl2_phl_bl1):
-        """
-        Populate the 'cutoff_PHL_VL2_BL1_below_cuttoff' column based on the cutoff value.
-
-        Parameters:
-        - analysis_df (pd.DataFrame): The analysis DataFrame.
-        - cuttoff_phl_vl2_phl_bl1 (float): The cutoff value.
-
-        Returns:
-        - pd.DataFrame: The analysis DataFrame with the 'cutoff_PHL_VL2_BL1_below_cuttoff' column populated.
-        """
         # Create a copy of the 'pHL_VL2_BL1' column
         analysis_df['cutoff_PHL_VL2_BL1_below_cuttoff'] = analysis_df['slope_corrected_phl_vl2_bl1']
+
+        # Collect rows where the condition is met in 'analysis_df'
+        phl_cuttoff = analysis_df.loc[analysis_df['slope_corrected_phl_vl2_bl1'] > cuttoff_phl_vl2_phl_bl1, ['well_number', 'cutoff_PHL_VL2_BL1_below_cuttoff', 'phl_z_score']].copy()
 
         # Replace values with None where the condition is not met
         analysis_df.loc[analysis_df['slope_corrected_phl_vl2_bl1'] > cuttoff_phl_vl2_phl_bl1, 'cutoff_PHL_VL2_BL1_below_cuttoff'] = None
 
-        return analysis_df
+        return analysis_df, phl_cuttoff
     
     @staticmethod
     def calculate_corrected_mean_phl_vl2_phl_bl1(analysis_df):
@@ -132,7 +126,19 @@ class PhlUtilities:
         return analysis_df
     
     @staticmethod
+    def populate_phl_cuttoff_z_scores(phl_cuttoff, corrected_mean_phl_vl2_phl_bl1, corrected_sd_phl_vl2_phl_bl1):
+        
+        phl_cuttoff['phl_z_score'] = (phl_cuttoff['cutoff_PHL_VL2_BL1_below_cuttoff'] - corrected_mean_phl_vl2_phl_bl1)/corrected_sd_phl_vl2_phl_bl1
+
+        return phl_cuttoff
+
+    
+    @staticmethod
     def populate_hits_phl_z_score(analysis_df):
+
+        # Assuming 'phl_z_score' is a mix of string and integer values in analysis_df
+        analysis_df['phl_z_score'] = pd.to_numeric(analysis_df['phl_z_score'], errors='coerce')
+
         # Use boolean indexing to filter rows based on conditions
         condition = (analysis_df['cutoff_PHL_VL2_BL1_below_cuttoff'].notna()) & (analysis_df['phl_z_score'] < -5)
 

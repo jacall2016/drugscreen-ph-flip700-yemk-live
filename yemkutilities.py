@@ -108,23 +108,16 @@ class YemkUtilities:
     
     @staticmethod
     def populate_cutoff_yemk_vl2_bl1_below_cuttoff(analysis_df, cuttoff_yemk_vl2_yemk_bl1):
-        """
-        Populate the 'cutoff_yemk_vl2_bl1_below_cuttoff' column based on the cutoff value.
-
-        Parameters:
-        - analysis_df (pd.DataFrame): The analysis DataFrame.
-        - cuttoff_yemk_vl2_yemk_bl1 (float): The cutoff value.
-
-        Returns:
-        - pd.DataFrame: The analysis DataFrame with the 'cutoff_yemk_vl2_bl1_below_cuttoff' column populated.
-        """
         # Create a copy of the 'yemk_vl2_bl1' column
         analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'] = analysis_df['slope_corrected_yemk_vl2_bl1']
+
+        # Collect rows where the condition is met in 'analysis_df'
+        yemk_cuttoff = analysis_df.loc[analysis_df['slope_corrected_yemk_vl2_bl1'] > cuttoff_yemk_vl2_yemk_bl1, ['well_number', 'cutoff_yemk_vl2_bl1_below_cuttoff', 'yemk_z_score']].copy()
 
         # Replace values with None where the condition is not met
         analysis_df.loc[analysis_df['slope_corrected_yemk_vl2_bl1'] > cuttoff_yemk_vl2_yemk_bl1, 'cutoff_yemk_vl2_bl1_below_cuttoff'] = None
 
-        return analysis_df
+        return analysis_df, yemk_cuttoff
     
     @staticmethod
     def calculate_corrected_mean_yemk_vl2_yemk_bl1(analysis_df):
@@ -151,7 +144,16 @@ class YemkUtilities:
         return analysis_df
     
     @staticmethod
+    def populate_yemk_cuttoff_z_scores(yemk_cuttoff, corrected_mean_yemk_vl2_yemk_bl1, corrected_sd_yemk_vl2_yemk_bl1):
+        yemk_cuttoff['yemk_z_score'] = (yemk_cuttoff['cutoff_yemk_vl2_bl1_below_cuttoff'] - corrected_mean_yemk_vl2_yemk_bl1)/corrected_sd_yemk_vl2_yemk_bl1
+
+        return yemk_cuttoff
+
+    @staticmethod
     def populate_hits_yemk_z_score(analysis_df):
+        # Assuming 'phl_z_score' is a mix of string and integer values in analysis_df
+        analysis_df['yemk_z_score'] = pd.to_numeric(analysis_df['yemk_z_score'], errors='coerce')
+
         # Use boolean indexing to filter rows based on conditions
         condition = (analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'].notna()) & (analysis_df['yemk_z_score'] < -5)
 
@@ -160,6 +162,20 @@ class YemkUtilities:
 
         return analysis_df
     
+    @staticmethod
+    def export_All_Cuttoff(phl_cuttoff_z_score, yemk_cuttoff_z_score, excel_file_path, sheet_name):
+        # Combine these 2 dataframes using the "well_number" into a dataframe called export_df
+        export_df = pd.merge(phl_cuttoff_z_score, yemk_cuttoff_z_score, on='well_number')
+
+        # Create the file if it doesn't exist
+        if not os.path.isfile(excel_file_path):
+            export_df.to_excel('downloads/'+ excel_file_path, sheet_name, index=False, engine='openpyxl')
+        else:
+            # Export the selected columns to a new sheet if the file exists
+            with pd.ExcelWriter(excel_file_path, engine='openpyxl', mode='a') as writer:
+                export_df.to_excel(writer, sheet_name=sheet_name, index=False)
+        return export_df
+
     @staticmethod
     def export_All_Plates_YEMK_pHL_Live(analysis_df, excel_file_path, base_sheet_name):
         # Select relevant columns from analysis_df

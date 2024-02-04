@@ -108,23 +108,16 @@ class Flip700Utilities:
     
     @staticmethod
     def populate_cutoff_flip700_vl2_bl1_below_cuttoff(analysis_df, cuttoff_flip700_vl2_flip700_bl1):
-        """
-        Populate the 'cutoff_flip700_vl2_bl1_below_cuttoff' column based on the cutoff value.
-
-        Parameters:
-        - analysis_df (pd.DataFrame): The analysis DataFrame.
-        - cuttoff_flip700_vl2_flip700_bl1 (float): The cutoff value.
-
-        Returns:
-        - pd.DataFrame: The analysis DataFrame with the 'cutoff_flip700_vl2_bl1_below_cuttoff' column populated.
-        """
         # Create a copy of the 'flip700_vl2_bl1' column
         analysis_df['cutoff_flip700_vl2_bl1_below_cuttoff'] = analysis_df['slope_corrected_flip700_vl2_bl1']
+
+        # Collect rows where the condition is met in 'analysis_df'
+        flip700_cuttoff = analysis_df.loc[analysis_df['slope_corrected_flip700_vl2_bl1'] > cuttoff_flip700_vl2_flip700_bl1, ['well_number', 'cutoff_flip700_vl2_bl1_below_cuttoff', 'flip700_z_score']].copy()
 
         # Replace values with None where the condition is not met
         analysis_df.loc[analysis_df['slope_corrected_flip700_vl2_bl1'] > cuttoff_flip700_vl2_flip700_bl1, 'cutoff_flip700_vl2_bl1_below_cuttoff'] = None
 
-        return analysis_df
+        return analysis_df, flip700_cuttoff
     
     @staticmethod
     def calculate_corrected_mean_flip700_vl2_flip700_bl1(analysis_df):
@@ -151,7 +144,18 @@ class Flip700Utilities:
         return analysis_df
     
     @staticmethod
+    def populate_flip700_cuttoff_z_scores(flip700_cuttoff, corrected_mean_flip700_vl2_flip700_bl1, corrected_sd_flip700_vl2_flip700_bl1):
+        flip700_cuttoff['flip700_z_score'] = (flip700_cuttoff['cutoff_flip700_vl2_bl1_below_cuttoff'] - corrected_mean_flip700_vl2_flip700_bl1)/corrected_sd_flip700_vl2_flip700_bl1
+
+        return flip700_cuttoff
+    
+    @staticmethod
     def populate_hits_flip700_z_score(analysis_df):
+        # Assuming 'phl_z_score' is a mix of string and integer values in analysis_df
+        analysis_df['flip700_z_score'] = pd.to_numeric(analysis_df['flip700_z_score'], errors='coerce')
+        
+        #print(type(analysis_df['flip700_z_score']))
+
         # Use boolean indexing to filter rows based on conditions
         condition = (analysis_df['cutoff_flip700_vl2_bl1_below_cuttoff'].notna()) & (analysis_df['flip700_z_score'] < -5)
 
@@ -159,6 +163,25 @@ class Flip700Utilities:
         analysis_df.loc[condition, 'hits_flip700_z_score'] = analysis_df.loc[condition, 'flip700_z_score']
 
         return analysis_df
+    
+    @staticmethod
+    def export_All_Cuttoff(phl_cuttoff_z_score, flip700_cuttoff_z_score, excel_file_path, sheet_name):
+
+        # Combine these 2 dataframes using the "well_number" into a dataframe called export_df
+        export_df = pd.merge(phl_cuttoff_z_score, flip700_cuttoff_z_score, on='well_number', how='outer')
+
+        # Reorder columns with 'well_number' as the first column
+        export_df = export_df[['well_number'] + [col for col in export_df.columns if col != 'well_number']]
+
+        # Create the file if it doesn't exist
+        if not os.path.isfile(excel_file_path):
+            export_df.to_excel('downloads/' + excel_file_path, sheet_name, index=False, engine='openpyxl')
+        else:
+            # Export the selected columns to a new sheet if the file exists
+            with pd.ExcelWriter(excel_file_path, engine='openpyxl', mode='a') as writer:
+                export_df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+        return export_df
     
     @staticmethod
     def export_All_Plates_flip700_pHL_Live(analysis_df, excel_file_path, base_sheet_name):

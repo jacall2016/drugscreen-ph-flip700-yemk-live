@@ -31,7 +31,7 @@ class Generate:
         cuttoff_phl_vl2_phl_bl1 = PhlUtilities.calculate_cuttoff_phl_vl2_phl_bl1(mean_phl_vl2_phl_bl1, sd_phl_vl2_phl_bl1)
 
         # populate the cutoff_PHL_VL2_BL1_below_cuttoff if above the cutoff don't include
-        analysis_df = PhlUtilities.populate_cutoff_PHL_VL2_BL1_below_cuttoff(analysis_df, cuttoff_phl_vl2_phl_bl1)
+        analysis_df, phl_cuttoff = PhlUtilities.populate_cutoff_PHL_VL2_BL1_below_cuttoff(analysis_df, cuttoff_phl_vl2_phl_bl1)
 
         #calculate correct mean or phl_vl2_phl_bl1 and Flip700_vl2_Flip700_bl1
         corrected_mean_phl_vl2_phl_bl1 = PhlUtilities.calculate_corrected_mean_phl_vl2_phl_bl1(analysis_df)
@@ -41,6 +41,8 @@ class Generate:
 
         #populate phl z score
         analysis_df = PhlUtilities.populate_phl_z_score(analysis_df, corrected_mean_phl_vl2_phl_bl1, corrected_sd_phl_vl2_phl_bl1)
+
+        phl_cuttoff_z_score = PhlUtilities.populate_phl_cuttoff_z_scores(phl_cuttoff, corrected_mean_phl_vl2_phl_bl1, corrected_sd_phl_vl2_phl_bl1)
 
         #populate the hits
         analysis_df = PhlUtilities.populate_hits_phl_z_score(analysis_df)
@@ -55,7 +57,7 @@ class Generate:
             'cuttoff_ph':[cuttoff_phl_vl2_phl_bl1],
         })
 
-        return analysis_df, phl_indicators
+        return analysis_df, phl_indicators, phl_cuttoff_z_score
 
     @staticmethod
     def generate_yemk(analysis_df):
@@ -78,7 +80,7 @@ class Generate:
         cuttoff_yemk_vl2_yemk_bl1 = YemkUtilities.calculate_cuttoff_yemk_vl2_yemk_bl1(mean_yemk_vl2_yemk_bl1, sd_yemk_vl2_yemk_bl1)
 
         # populate the cutoff_PHL_VL2_BL1_below_cuttoff if above the cutoff don't include
-        analysis_df = YemkUtilities.populate_cutoff_yemk_vl2_bl1_below_cuttoff(analysis_df, cuttoff_yemk_vl2_yemk_bl1)
+        analysis_df, yemk_cuttoff = YemkUtilities.populate_cutoff_yemk_vl2_bl1_below_cuttoff(analysis_df, cuttoff_yemk_vl2_yemk_bl1)
 
         #calculate correct mean or phl_vl2_phl_bl1 and yemk_vl2_yemk_bl1
         corrected_mean_yemk_vl2_yemk_bl1 = YemkUtilities.calculate_corrected_mean_yemk_vl2_yemk_bl1(analysis_df)
@@ -88,6 +90,8 @@ class Generate:
 
         #populate phl and yemk z score
         analysis_df = YemkUtilities.populate_yemk_z_score(analysis_df, corrected_mean_yemk_vl2_yemk_bl1, corrected_sd_yemk_vl2_yemk_bl1)
+
+        yemk_cuttoff_z_scores = YemkUtilities.populate_yemk_cuttoff_z_scores(yemk_cuttoff, corrected_mean_yemk_vl2_yemk_bl1, corrected_sd_yemk_vl2_yemk_bl1)
 
         #populate the hits
         analysis_df = YemkUtilities.populate_hits_yemk_z_score(analysis_df)
@@ -101,7 +105,7 @@ class Generate:
             'cuttoff_yemk': [cuttoff_yemk_vl2_yemk_bl1],
         })
 
-        return analysis_df, yemk_indicators
+        return analysis_df, yemk_indicators, yemk_cuttoff_z_scores
 
     @staticmethod
     def generate_flip700(analysis_df):
@@ -128,7 +132,7 @@ class Generate:
         cuttoff_Flip700_vl2_Flip700_bl1 = Flip700Utilities.calculate_cuttoff_flip700_vl2_flip700_bl1(mean_Flip700_vl2_Flip700_bl1, sd_Flip700_vl2_Flip700_bl1)
 
         # populate the cutoff_PHL_VL2_BL1_below_cuttoff if above the cutoff don't include
-        analysis_df = Flip700Utilities.populate_cutoff_flip700_vl2_bl1_below_cuttoff(analysis_df, cuttoff_Flip700_vl2_Flip700_bl1)
+        analysis_df, flip700_cuttoff = Flip700Utilities.populate_cutoff_flip700_vl2_bl1_below_cuttoff(analysis_df, cuttoff_Flip700_vl2_Flip700_bl1)
 
         #calculate correct mean or phl_vl2_phl_bl1 and Flip700_vl2_Flip700_bl1
         corrected_mean_Flip700_vl2_Flip700_bl1 = Flip700Utilities.calculate_corrected_mean_flip700_vl2_flip700_bl1(analysis_df)
@@ -138,6 +142,8 @@ class Generate:
 
         #populate phl and Flip700 z score
         analysis_df = Flip700Utilities.populate_flip700_z_score(analysis_df, corrected_mean_Flip700_vl2_Flip700_bl1, corrected_sd_Flip700_vl2_Flip700_bl1)
+
+        flip700_cuttoff_z_scores = Flip700Utilities.populate_flip700_cuttoff_z_scores(flip700_cuttoff, corrected_mean_Flip700_vl2_Flip700_bl1, corrected_sd_Flip700_vl2_Flip700_bl1)
 
         #populate the hits
         analysis_df = Flip700Utilities.populate_hits_flip700_z_score(analysis_df)
@@ -152,7 +158,7 @@ class Generate:
             'cuttoff_Flip700':[cuttoff_Flip700_vl2_Flip700_bl1]
         })
 
-        return analysis_df, flip700_indicators
+        return analysis_df, flip700_indicators, flip700_cuttoff_z_scores
 
     @staticmethod
     def generate_live(analysis_df):
@@ -250,15 +256,17 @@ class Generate:
         analysis_df = AnalysisUtilities.calculate_relative_well_number(analysis_df)
 
         # generate phl
-        analysis_df, phl_indicators = Generate.generate_phl(analysis_df)
+        analysis_df, phl_indicators, phl_cuttoff_z_score = Generate.generate_phl(analysis_df)
         
         # generate flip700
-        analysis_df, flip700_indicators = Generate.generate_flip700(analysis_df)
+        analysis_df, flip700_indicators, flip700_cuttoff_z_score = Generate.generate_flip700(analysis_df)
 
         # generate live
         analysis_df, live_indicators = Generate.generate_live(analysis_df)
 
         analysis_indicators = pd.concat([flip700_indicators, phl_indicators, live_indicators], axis=1)
+
+        Flip700Utilities.export_All_Cuttoff(phl_cuttoff_z_score, flip700_cuttoff_z_score, "All_cuttoff_flip700_phl_" + file_name + '.xlsx', 'All_flip700_phl_cuttoff')
         
         #write the All_Plates_Flip700_pHL_Live Excel file
         Flip700Utilities.export_All_Plates_flip700_pHL_Live(analysis_df, 'All_P_Flip700_pHL_Live_' + file_name + '.xlsx','All_P_Flip700_pHL_Live')
@@ -306,15 +314,17 @@ class Generate:
         analysis_df = AnalysisUtilities.calculate_relative_well_number(analysis_df)
         
         # generate phl
-        analysis_df, phl_indicators = Generate.generate_phl(analysis_df)
+        analysis_df, phl_indicators, phl_cuttoff_z_score = Generate.generate_phl(analysis_df)
 
         # generate yemk
-        analysis_df, yemk_indicators = Generate.generate_yemk(analysis_df)
+        analysis_df, yemk_indicators, yemk_cuttoff_z_scores = Generate.generate_yemk(analysis_df)
 
         # generate live
         analysis_df, live_indicators = Generate.generate_live(analysis_df)
 
         analysis_indicators = pd.concat([yemk_indicators, phl_indicators, live_indicators], axis=1)
+
+        YemkUtilities.export_All_Cuttoff(phl_cuttoff_z_score, yemk_cuttoff_z_scores, "All_cuttoff_yemk_phl_" + file_name + '.xlsx', 'All_yemk_phl_cuttoff')
 
         #write the All_Plates_YEMK_pHL_Live Excel file
         YemkUtilities.export_All_Plates_YEMK_pHL_Live(analysis_df, 'All_P_YEMK_pHL_Live_' + file_name + '.xlsx','All_P_YEMK_pHL_Live')
