@@ -140,7 +140,9 @@ class PhlUtilities:
         analysis_df['phl_z_score'] = pd.to_numeric(analysis_df['phl_z_score'], errors='coerce')
 
         # Use boolean indexing to filter rows based on conditions
-        condition = (analysis_df['cutoff_PHL_VL2_BL1_below_cuttoff'].notna()) & (analysis_df['phl_z_score'] < -5)
+        condition = (analysis_df['cutoff_PHL_VL2_BL1_below_cuttoff'].notna()) & \
+                    (analysis_df['phl_z_score'] < -5) & \
+                    (analysis_df['phl_count'] >= 1000)  # Add the condition for phl_count
 
         # Populate 'hits_phl_z_score' based on the condition
         analysis_df.loc[condition, 'hits_phl_z_score'] = analysis_df.loc[condition, 'phl_z_score']

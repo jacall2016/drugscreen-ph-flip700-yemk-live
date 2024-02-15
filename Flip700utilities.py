@@ -151,13 +151,13 @@ class Flip700Utilities:
     
     @staticmethod
     def populate_hits_flip700_z_score(analysis_df):
-        # Assuming 'phl_z_score' is a mix of string and integer values in analysis_df
+        # Assuming 'flip700_z_score' is a mix of string and integer values in analysis_df
         analysis_df['flip700_z_score'] = pd.to_numeric(analysis_df['flip700_z_score'], errors='coerce')
         
-        #print(type(analysis_df['flip700_z_score']))
-
         # Use boolean indexing to filter rows based on conditions
-        condition = (analysis_df['cutoff_flip700_vl2_bl1_below_cuttoff'].notna()) & (analysis_df['flip700_z_score'] < -5)
+        condition = (analysis_df['cutoff_flip700_vl2_bl1_below_cuttoff'].notna()) & \
+                    (analysis_df['flip700_z_score'] < -5) & \
+                    (analysis_df['flip700_count'] >= 1000)  # Add the condition for flip700_count
 
         # Populate 'hits_flip700_z_score' based on the condition
         analysis_df.loc[condition, 'hits_flip700_z_score'] = analysis_df.loc[condition, 'flip700_z_score']

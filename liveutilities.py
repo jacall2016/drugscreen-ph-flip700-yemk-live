@@ -15,8 +15,14 @@ class LiveUtilities:
     
     @staticmethod
     def populate_live_z_score(analysis_df, live_mean, live_sd):
-        analysis_df['live_z_score'] = (analysis_df['live_percentage'] - live_mean)/live_sd
-  
+        analysis_df['live_z_score'] = (analysis_df['live_percentage'] - live_mean) / live_sd
+        
+        # Add a check for 'total_count' to prevent populating if less than 5,000
+        condition = analysis_df['total_count'] >= 5000
+        
+        # Populate 'live_z_score' based on the condition
+        analysis_df.loc[condition, 'live_z_score'] = (analysis_df.loc[condition, 'live_percentage'] - live_mean) / live_sd
+
         return analysis_df
     
     @staticmethod

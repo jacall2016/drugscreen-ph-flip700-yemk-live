@@ -151,11 +151,13 @@ class YemkUtilities:
 
     @staticmethod
     def populate_hits_yemk_z_score(analysis_df):
-        # Assuming 'phl_z_score' is a mix of string and integer values in analysis_df
+        # Assuming 'yemk_z_score' is a mix of string and integer values in analysis_df
         analysis_df['yemk_z_score'] = pd.to_numeric(analysis_df['yemk_z_score'], errors='coerce')
 
         # Use boolean indexing to filter rows based on conditions
-        condition = (analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'].notna()) & (analysis_df['yemk_z_score'] < -5)
+        condition = (analysis_df['cutoff_yemk_vl2_bl1_below_cuttoff'].notna()) & \
+                    (analysis_df['yemk_z_score'] < -5) & \
+                    (analysis_df['yemk_count'] >= 1000)  # Add the condition for yemk_count
 
         # Populate 'hits_yemk_z_score' based on the condition
         analysis_df.loc[condition, 'hits_yemk_z_score'] = analysis_df.loc[condition, 'yemk_z_score']
