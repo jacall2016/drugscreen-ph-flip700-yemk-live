@@ -182,10 +182,12 @@ class Generate:
         return analysis_df, live_indicators
 
     @staticmethod
-    def generateGraphs(analysis_df, y_axes_list):
+    def generateGraphs(analysis_df, y_axes_list, uploaded_file_path):
+
+        file_name = "QC_plots_" + AnalysisUtilities.getfile_name(uploaded_file_path)
 
         # Create the 'images' directory if it doesn't exist
-        output_folder = os.path.join("downloads", "images")
+        output_folder = os.path.join("downloads", file_name)
         os.makedirs(output_folder, exist_ok=True)
 
         # Loop through each y-axis and generate/save the corresponding graph
@@ -280,7 +282,7 @@ class Generate:
         # Define the y-axes for each graph
         y_axes_list = ["total_count", "phl_count", "flip700_count", "live_percentage", "pHL_VL2_BL1", "flip700_vl2_bl1"]
 
-        Generate.generateGraphs(analysis_df, y_axes_list)
+        Generate.generateGraphs(analysis_df, y_axes_list, uploaded_file_path)
         
     @staticmethod
     def generate_files_phl_bl1_yemk_vl1(uploaded_file_path):
@@ -338,4 +340,4 @@ class Generate:
         # Define the y-axes for each graph
         y_axes_list = ["total_count", "phl_count", "yemk_count", "live_percentage", "pHL_VL2_BL1", "yemk_vl2_bl1"]
 
-        Generate.generateGraphs(analysis_df, y_axes_list)
+        Generate.generateGraphs(analysis_df, y_axes_list, uploaded_file_path)

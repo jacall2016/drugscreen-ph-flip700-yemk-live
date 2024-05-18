@@ -35,7 +35,7 @@ type either flip700 or yemk only excel file with yemk or flip700 that have a Sam
 
 then select the file from the uploads folder files must be in the uploads folder to bbe acceated
 
-then 3 files will be generated analysis, z-score, and hits along with the assosiated images. 
+then 4 files will be generated analysis, z-score, and hits along with the assosiated images. 
 
 note: existing files in the downloads folder may be replaced if names are the same
 
